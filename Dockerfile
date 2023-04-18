@@ -1,13 +1,18 @@
 # Base image
 FROM python:3.8-slim-buster
 
+RUN apk add --no-cache --virtual .build-deps gcc musl-dev \
+    && pip install --upgrade pip \
+    && pip install pytest \
+    && apk del .build-deps gcc musl-dev
+
 # Set working directory
 WORKDIR /app
 
 # Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install pytest
+
 
 # Copy application files
 COPY . .
