@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Unit Tests') {
             steps {
-                sh 'docker-compose run app sh -c "pytest tests/ --cov=. --cov-report=xml"'
+                docker-compose run app sh -c "pytest tests/ --cov=app --cov-report=xml"
             }
             post {
                 always {
