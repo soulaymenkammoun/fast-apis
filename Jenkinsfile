@@ -1,50 +1,43 @@
 pipeline {
-    agent any 
-
-environment {
-        SONAR_LOGIN = credentials('sonar_login')
-    } 
-
-stages {
-        stage('Checkout') {
-            steps {
-                // Checkout your code from version control system
-                script{
-                    checkout([$class: 'GitSCM' , branches: [[name: '*/master']] ,
-                       userRemoteConfigs: [[
-                           url :'https://github.com/soulaymenkammoun/fast-apis.git']]])
-                }
-            }
-        }
+    agent any
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+        SONAR_LOGIN = credentials('sonarqube-login')
+    }
+    stages {
         stage('Build') {
             steps {
-                script{
-                // Install the required dependencies
-                sh 'pip install -r requirements.txt'
+                sh "docker build -t soulaymendocker123/fastapi:latest ."
             }
-            }
-                
         }
-        stage('Test') {
+        stage('Unit Tests') {
             steps {
-                script{
-                // Run the tests
-                sh 'pytest tests/'
+                sh 'docker-compose run app sh -c "pytest tests/ --cov=. --cov-report=xml"'
             }
+            post {
+                always {
+                    junit 'tests/**/*.xml'
                 }
+            }
         }
-         stage('SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
-                 script{
-                sh 'docker run -d -p 9000:9000 sonarqube:8.9.7-community'
-                sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${env.SONAR_LOGIN}'
-            }
+                withSonarQubeEnv('SonarQube') {
+                    sh "mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${env.SONAR_LOGIN}"
                 }
+            }
         }
-     post {
-        always {
-            sh 'docker stop $(docker ps -aqf "ancestor=sonarqube:8.9.7-community")'
+        stage('Docker login') {
+            agent any
+            steps {
+                sh 'echo "login Docker ...."'
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
         }
+        stage('Push Docker Image') {
+            steps {
+                sh "docker push soulaymendocker123/fastapi:latest"
+            }
         }
-        }
+    }
 }
