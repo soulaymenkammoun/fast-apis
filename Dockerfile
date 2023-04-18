@@ -4,6 +4,7 @@ FROM python:3.8-slim-buster
 RUN apt-get update && apt-get install -y gcc libc-dev \
     && pip install --upgrade pip \
     && pip install pytest \
+    && pip install pytest-cov \
     && apt-get autoremove -y && apt-get clean -y
 
 # Set working directory
