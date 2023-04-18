@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fast-apis-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fast-apis
+  template:
+    metadata:
+      labels:
+        app: fast-apis
+    spec:
+      containers:
+      - name: fast-apis
+        image: soulaymendocker123/fast-apis:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8000
+        env:
+        - name: ENV_VAR_NAME
+          value: ENV_VAR_VALUE
