@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    command: bash -c "python main.py"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=dev
+  db:
+    image: postgres:11-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: fastapis
+      POSTGRES_USER: fastapis
+      POSTGRES_PASSWORD: fastapis
