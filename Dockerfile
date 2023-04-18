@@ -1,7 +1,7 @@
 # Base image
 FROM python:3.8-slim-buster
 
-RUN apt-get update && apt-get install -y apk-tools
+RUN apt-get update && apt-get install -y python3-apk
 
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev \
     && pip install --upgrade pip \
