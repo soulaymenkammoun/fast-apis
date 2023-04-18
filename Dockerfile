@@ -1,6 +1,8 @@
 # Base image
 FROM python:3.8-slim-buster
 
+RUN apk update && apk add --no-cache apk-tools
+
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev \
     && pip install --upgrade pip \
     && pip install pytest \
