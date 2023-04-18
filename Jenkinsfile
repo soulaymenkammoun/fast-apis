@@ -5,6 +5,13 @@ pipeline {
         SONAR_LOGIN = credentials('sonar-jenkins')
     }
     stages {
+        
+        stage('docker-compose Build') {
+            steps {
+                sh "docker-compose build"
+            }
+        }
+        
         stage('Build') {
             steps {
                 sh "docker build -t soulaymendocker123/fastapi:latest ."
