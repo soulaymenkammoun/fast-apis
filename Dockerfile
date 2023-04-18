@@ -1,17 +1,15 @@
-# Use the official Python image as the base image
-FROM python:3.9
+# Base image
+FROM python:3.8-slim-buster
 
-# Set the working directory to /app
+# Set working directory
 WORKDIR /app
 
-# Copy the requirements file to the Docker image
+# Install dependencies
 COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install the dependencies specified in the requirements file
-RUN pip install -r requirements.txt
-
-# Copy the rest of the files to the Docker image
+# Copy application files
 COPY . .
 
-# Specify the command to run when the Docker container starts
-CMD ["uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8000"]
+# Run the command to start the application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
