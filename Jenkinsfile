@@ -38,8 +38,8 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                     sh "mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${env.SONAR_LOGIN}"
                 }
-            }*/
-        }
+            }
+        }*/
         stage('Docker login') {
             agent any
             steps {
