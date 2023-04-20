@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        SONAR_LOGIN = credentials('sonar-jenkins')
+        //SONAR_LOGIN = credentials('sonar-jenkins')
     }
     stages {
         
@@ -27,12 +27,18 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube Analysis') {
+        
+        stage('SonarQube analysis') {
+        steps{
+        withSonarQubeEnv('sonarqube-8.9.7') { 
+        sh "mvn sonar:sonar"
+        
+       /* stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh "mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${env.SONAR_LOGIN}"
                 }
-            }
+            }*/
         }
         stage('Docker login') {
             agent any
